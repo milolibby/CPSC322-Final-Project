@@ -141,6 +141,16 @@ class MyPyTable:
             except ValueError:
                 pass
 
+    def discretize_col(self, cols, discretizer):
+        col_indices = []
+        for col_name in cols:
+            col_indices.append(self.column_names.index(col_name))
+
+        for i, row in enumerate(self.data):
+            for j in range(len(row)):
+                if j in col_indices:
+                    self.data[i][j] = discretizer(self.data[i][j])
+
     def drop_rows_with_zero_in_col(self, cols_to_check):
         col_indices = []
         drop_rows = []

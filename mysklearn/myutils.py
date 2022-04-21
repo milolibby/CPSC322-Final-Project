@@ -88,6 +88,12 @@ def group_by_label(Instances, labels):
     return groups_dict
 
 
+def age_discretizer(age):
+    if age > 28:
+        return "old"
+    return "young"
+
+
 def majority_vote_winner(values, frequencies):
     max_frequency = max(frequencies)
     max_index = frequencies.index(max_frequency)
