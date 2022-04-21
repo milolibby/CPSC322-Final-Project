@@ -203,3 +203,18 @@ def get_scores_from_folds(X, y, X_train_folds, X_test_folds, classifier):
         y_true_all, predictions_all, ["yes", "no"])
 
     return accuracy, error, precision, recall, f1, matrix
+
+
+def convert_list_to_dict(lst):
+    """
+    Accepts a list of values and converts it into a dictionary which 
+    records all possible values along with it's frequencies
+    """
+    dictionary = {}
+    for value in lst:
+        if value in dictionary:
+            dictionary[value] += 1
+        else:
+            dictionary[value] = 1
+
+    return dictionary
