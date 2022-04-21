@@ -14,16 +14,46 @@ def randomize_in_place(alist, parallel_list=None, random_state=0):
 
 
 def ratings_discretizer(num):
-    if num > 90:
-        return 9
-    if num > 80:
-        return 8
-    if num > 70:
-        return 7
-    if num > 60:
-        return 6
-    if num > 50:
-        return 5
+    if num > 79:
+        return "special"
+    return "basic"
+
+
+def reb_discretizer(num):
+    if num > 9.0:
+        return "high volume"
+    if num > 4.0:
+        return "avergae volume"
+    return "low volume"
+
+
+def fg_discretizer(num):
+    if num > 45:
+        return "efficient"
+    return "inefficient"
+
+
+def win_percent_discretizer(num):
+    if num > .7:
+        return "high"
+    elif num > .5:
+        return "average"
+    else:
+        return "low"
+
+
+def pts_discetizer(num):
+    if num > 21:
+        return "top"
+    elif num > 12:
+        return "mid"
+    return "bottom"
+
+
+def threePTRS_made_discretizer(num):
+    if num > 2.0:
+        return "high volume"
+    return "low volume"
 
 
 def group_by_class_label(labels):
