@@ -3,8 +3,6 @@ from tkinter import VERTICAL
 from turtle import color
 from myutils import convert_list_to_dict
 
-"""I had to rename this file from plot_utils.py to Plot_Utils.py because "plot_utils"
-shadows another library meaning and I was having issuse importing it in VGSales.ipynb"""
 import matplotlib.pyplot as plt
 def create_bar_chart(data, X_label="Type",Y_label="Frequency"): #frequency diagram
     """

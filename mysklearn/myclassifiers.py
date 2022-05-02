@@ -7,8 +7,6 @@ from mysklearn import myutils
 from mysklearn.mypytable import MyPyTable
 
 
-
-
 class MyNaiveBayesClassifier:
     """Represents a Naive Bayes classifier.
 
