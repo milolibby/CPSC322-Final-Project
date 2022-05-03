@@ -1,10 +1,6 @@
-import numpy as np
 from mysklearn import myutils
-import copy
-from mysklearn import mypytable
-import operator
-from mysklearn import mysimplelinearregressor
-import os
+from mysklearn.mypytable import MyPyTable
+
 
 
 class MyNaiveBayesClassifier:
