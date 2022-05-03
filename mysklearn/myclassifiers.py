@@ -1,6 +1,10 @@
+from random import random
 from mysklearn import myutils
 from mysklearn.mypytable import MyPyTable
+import operator
+import copy
 
+from mysklearn.mysimplelinearregressor import MySimpleLinearRegressor
 
 
 class MyNaiveBayesClassifier:
@@ -108,7 +112,7 @@ class MyNaiveBayesClassifier:
             col_ct = 0
             inner_dict = {}
             for i in range(len(class_instances[0])):
-                col = mypytable.MyPyTable(
+                col = MyPyTable(
                     [x for x in range(len(class_instances[0]))], class_instances).get_column(i)
 
                 attribute_values, value_freqs = myutils.get_frequencies(
@@ -158,7 +162,7 @@ class MySimpleLinearRegressionClassifier:
                 The shape of y_train is n_train_samples
         """
         if not self.regressor:
-            self.regressor = mysimplelinearregressor.MySimpleLinearRegressor()
+            self.regressor = MySimpleLinearRegressor()
         self.regressor.fit(X_train, y_train)
 
     def predict(self, X_test):
@@ -329,20 +333,24 @@ class MyDecisionTreeClassifier:
         Terminology: instance = sample = row and attribute = feature = column
     """
 
-    def __init__(self):
+    def __init__(self, F):
         """Initializer for MyDecisionTreeClassifier.
         """
         self.X_train = None
         self.y_train = None
         self.tree = None
+        self. F = F
 
     def tdidt(self, current_instances, available_attributes, header, attribute_domains):
         # basic approach (uses recursion!!):
         # print("available_attributes:", available_attributes)
 
+        # select a random subsets of available attributes
         # select an attribute to split on
+        random_attributes = myutils.random_attribute_subset(
+            available_attributes, self.F)
         attribute = myutils.select_attribute(
-            current_instances, available_attributes, attribute_domains, header)
+            current_instances, random_attributes, attribute_domains, header)
         available_attributes.remove(attribute)
         tree = ["Attribute", attribute]
         # group data by attribute domains (creates pairwise disjoint partitions)
@@ -416,7 +424,7 @@ class MyDecisionTreeClassifier:
 
         attribute_domains = {}
 
-        data_py_table = mypytable.MyPyTable(header, X_train)
+        data_py_table = MyPyTable(header, X_train)
         for i, att in enumerate(header):
             col = data_py_table.get_column(att)
             values, cts = myutils.get_frequencies(col)
