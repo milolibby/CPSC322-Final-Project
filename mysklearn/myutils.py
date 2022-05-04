@@ -4,6 +4,7 @@ import math
 
 import random
 
+
 def random_forest_split_test_and_training_sets_stratified(X, y):
     X_train = []
     X_test = []
@@ -25,7 +26,6 @@ def random_forest_split_test_and_training_sets_stratified(X, y):
             y_test.append(y[idx])
 
     return X_train, X_test, y_train, y_test
-
 
 
 def random_attribute_subset(attributes, F):
@@ -90,12 +90,13 @@ def threePTRS_made_discretizer(num):
 
 
 def mins_played_discretizer(mins):
-    if mins > 30:
+    if mins > 34:
         return "high"
-    elif mins > 15:
+    elif mins > 25:
         return "moderate"
     else:
         return "low"
+
 
 
 def group_by_class_label(labels):
