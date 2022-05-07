@@ -13,20 +13,27 @@ M = 7
 F = 2
 X_train = X_test = y_train = y_test = []
 
-# def import_dataset():
-#    with open("./nba_ratings.csv") as csv_file:
-#        csv_reader = csv.reader(csv_file)
-#        header = []
-#        header.append(next(csv_reader))
-#
-#        for i, row in enumerate(csv_reader):
-#            y_labels
+def import_nba_dataset():
+    AGE = 3
+    MIN = 8
+    PTS = 9 
+    y_labels = []
+    dataset = []
+    with open("./nba_ratings.csv") as csv_file:
+        csv_reader = csv.reader(csv_file)
+        header = []
+        header.append(next(csv_reader))
+        for i, row in enumerate(csv_reader):
+            y_labels.append([row[-1]])
+            dataset.append([row[AGE],row[MIN],row[PTS]])
+
+    return dataset, y_labels
 
 
 #dataset = pd.read_csv("./nba_ratings.csv")
 
 # interview dataset
-header = ["level", "lang", "tweets", "phd", "interviewed_well"]
+interview_header = ["level", "lang", "tweets", "phd", "interviewed_well"]
 interview_table = [
     ["Senior", "Java", "no", "no", "False"],
     ["Senior", "Java", "no", "yes", "False"],
@@ -43,10 +50,9 @@ interview_table = [
     ["Mid", "Java", "yes", "no", "True"],
     ["Junior", "Python", "no", "yes", "False"]
 ]
-
 # remove the classifications from each row in interview table and
 # add them to y_labels
-y_labels = [row[-1] for row in interview_table]
+interview_y_labels = [row[-1] for row in interview_table]
 interview_table = [row[0:-1] for row in interview_table]
 """
 Prepend the attribute labels
@@ -57,9 +63,14 @@ Ex: 'Senior' converted to 'level=Senior'
 #        row[i] = header[i] + "=" + str(row[i])
 
 
+
+# nba dataset
+nba_table, nba_labels = import_nba_dataset()
+
+
 def test_fit():
     X_train, X_test, y_train, y_test = myutils.random_forest_split_test_and_training_sets_stratified(
-        interview_table, y_labels)
+        nba_table, nba_labels)
 
     myRFC = MyRandomForestClassifier(10, 5, 3)
     myRFC.fit(X_train, y_train)
@@ -69,7 +80,7 @@ def test_fit():
 
 
 def test_predict():
-    get_train_test_sets(interview_table, y_labels)
+    get_train_test_sets(interview_table, interview_y_labels)
     assert len(X_train) == len(y_train) and len(X_train) != 0
     assert len(X_test) == len(y_test) and len(X_test) != 0
 
