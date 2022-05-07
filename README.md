@@ -22,3 +22,11 @@ With this dataset we are going to take an instance’s team, age, GP(games playe
 A potential impact of the results could be showing some insight to the rating process in the video game. We could use the classifier to see how certain players ratings would be adjusted if the ratings were true to the dataset. (Ex. Does Lebron James deserve his 97 rating based on his stats? Should Ja Morant be higher than 85? Does age prove to be a strong determining factor of rating?)
 
 The stakeholders are the 2K game developers as we are analyzing their game and decision in the rating process.  Also, one of the NBA players could be interested in these results.
+
+## To Start Flask App:  
+Open nba_predictor_app.py and run the file directly.  
+or  
+Uncomment "start_app()" in the last code cell within nba_rating.ipynb  
+(be aware that this will continuously run the app, halting all other code from being run!)
+
+Once you have done either of the options above, paste the url into your browser
