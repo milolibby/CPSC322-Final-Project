@@ -1,2 +1,2 @@
 special
-average, high, top, 
+average, high, top
