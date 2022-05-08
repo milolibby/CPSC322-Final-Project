@@ -1,5 +1,38 @@
 import numpy as np
 import mysklearn.myevaluation as myevaluation
+import math
+
+import random
+
+
+def random_forest_split_test_and_training_sets_stratified(X, y):
+    X_train = []
+    X_test = []
+    y_train = []
+    y_test = []
+
+    partition_indexes = group_by_class_label(y)
+
+    for group in partition_indexes:
+        train_idxs = group[:(len(group) * 2) // 3]
+        test_idxs = group[(len(group) * 2) // 3:]
+
+        for idx in train_idxs:
+            X_train.append(X[idx])
+            y_train.append(y[idx])
+
+        for idx in test_idxs:
+            X_test.append(X[idx])
+            y_test.append(y[idx])
+
+    return X_train, X_test, y_train, y_test
+
+
+def random_attribute_subset(attributes, F):
+    # shuffle and pick first F
+    shuffled = attributes[:]  # make a copy
+    random.shuffle(shuffled)
+    return shuffled[:F]
 
 
 def randomize_in_place(alist, parallel_list=None, random_state=0):
@@ -14,16 +47,56 @@ def randomize_in_place(alist, parallel_list=None, random_state=0):
 
 
 def ratings_discretizer(num):
-    if num > 90:
-        return 9
-    if num > 80:
-        return 8
-    if num > 70:
-        return 7
-    if num > 60:
-        return 6
-    if num > 50:
-        return 5
+    if num > 79:
+        return "special"
+    return "basic"
+
+
+def reb_discretizer(num):
+    if num > 9.0:
+        return "high volume"
+    if num > 4.0:
+        return "average volume"
+    return "low volume"
+
+
+def fg_discretizer(num):
+    if num > 45:
+        return "efficient"
+    return "inefficient"
+
+
+def win_percent_discretizer(num):
+    if num > .7:
+        return "high"
+    elif num > .5:
+        return "average"
+    else:
+        return "low"
+
+
+def pts_discretizer(num):
+    if num > 21:
+        return "top"
+    elif num > 12:
+        return "mid"
+    return "bottom"
+
+
+def threePTRS_made_discretizer(num):
+    if num > 2.0:
+        return "high volume"
+    return "low volume"
+
+
+def mins_played_discretizer(mins):
+    if mins > 34:
+        return "high"
+    elif mins > 25:
+        return "moderate"
+    else:
+        return "low"
+
 
 
 def group_by_class_label(labels):
@@ -63,6 +136,15 @@ def shirt_size_discretizer(num):
         return "M"
     else:
         return "S"
+
+
+def free_throw_discretizer(num):
+    if num > 90:
+        return "great"
+    elif num > 75:
+        return "decent"
+    else:
+        return "poor"
 
 
 """
@@ -205,6 +287,7 @@ def get_scores_from_folds(X, y, X_train_folds, X_test_folds, classifier):
     return accuracy, error, precision, recall, f1, matrix
 
 
+#used in Plot_Utils
 def convert_list_to_dict(lst):
     """
     Accepts a list of values and converts it into a dictionary which 
@@ -218,3 +301,92 @@ def convert_list_to_dict(lst):
             dictionary[value] = 1
 
     return dictionary
+
+
+def get_e(labels, total_instances):
+    e = []
+    values, counts = get_frequencies(labels)
+    for ct in counts:
+        pi = ct / len(labels)
+        e.append(-(pi * math.log(pi, 2)))
+
+    return sum(e) * (len(labels) / total_instances)
+
+
+def get_enew(partitions, total_instances):
+    enew = []
+    for group in list(partitions.values()):
+        labels = [row[-1] for row in group]
+        e = get_e(labels, total_instances)
+        enew.append(e)
+    return sum(enew)
+
+
+def select_attribute(instances, attributes, attribute_domains, header):
+    # with the smallest Enew
+    best_attribute = None
+    smallest_enew = 2
+    for attribute in attributes:
+        partition = partition_instances(
+            instances, attribute, attribute_domains, header)
+        enew = get_enew(partition, len(instances))
+        if enew < smallest_enew:
+            best_attribute = attribute
+            smallest_enew = enew
+
+    return best_attribute
+
+
+def all_same_class(att_partition):
+    class_value = att_partition[0][-1]
+    for row in att_partition:
+        if row[-1] is not class_value:
+            return False
+    return True
+
+
+def partition_instances(instances, split_attribute, attribute_domains, header):
+    # lets use a dictionary
+    partitions = {}  # key (string): value (subtable)
+    att_index = header.index(split_attribute)  # e.g. 0 for level
+    # e.g. ["Junior", "Mid", "Senior"]
+    att_domain = attribute_domains[att_index]
+    for att_value in att_domain:
+        partitions[att_value] = []
+        # task: finish
+        for instance in instances:
+            if instance[att_index] == att_value:
+                partitions[att_value].append(instance)
+
+    return partitions
+
+
+def majority_vote_winner(values, frequencies):
+    max_frequency = max(frequencies)
+    max_index = frequencies.index(max_frequency)
+
+    return values[max_index]
+
+
+def total_instances_in_partition(partitions):
+    total = 0
+    for key in partitions.keys():
+        total += len(partitions[key])
+    return total
+
+
+def determine_majority_vote_winner_dict(partitions):
+    partitions = list(partitions.values())
+    all_instances = []
+
+    for group in partitions:
+        if group == []:
+            continue
+        for instance in group:
+            all_instances.append(instance[-1])
+
+    values, counts = get_frequencies(all_instances)
+
+    winner = majority_vote_winner(values, counts)
+
+    return winner
