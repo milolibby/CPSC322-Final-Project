@@ -29,9 +29,6 @@ class MyRandomForestClassifier:
             tree = MyDecisionTreeClassifier(self.F)
             X_sample, X_remaining, y_sample, y_true = myevaluation.bootstrap_sample(
                 X_train, y_train, n_samples=int(len(X_train) * .66), random_state=i)
-
-            print(i)
-
             tree.fit(X_sample, y_sample)
             y_pred = tree.predict(X_remaining)
             accuracy_score = myevaluation.accuracy_score(y_true, y_pred)

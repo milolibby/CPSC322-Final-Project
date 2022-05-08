@@ -333,7 +333,7 @@ class MyDecisionTreeClassifier:
         Terminology: instance = sample = row and attribute = feature = column
     """
 
-    def __init__(self, F):
+    def __init__(self, F=None):
         """Initializer for MyDecisionTreeClassifier.
         """
         self.X_train = None
@@ -347,8 +347,11 @@ class MyDecisionTreeClassifier:
 
         # select a random subsets of available attributes
         # select an attribute to split on
-        random_attributes = myutils.random_attribute_subset(
-            available_attributes, self.F)
+        if self.F:
+            random_attributes = myutils.random_attribute_subset(
+                available_attributes, self.F)
+        else:
+            random_attributes = available_attributes
         attribute = myutils.select_attribute(
             current_instances, random_attributes, attribute_domains, header)
         available_attributes.remove(attribute)
@@ -453,6 +456,7 @@ class MyDecisionTreeClassifier:
 
         y_predicted = []
 
+        ct = 0
         for test_instance in X_test:
             current_subtree = self.tree
 

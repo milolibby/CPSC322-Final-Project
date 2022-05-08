@@ -13,10 +13,11 @@ M = 7
 F = 2
 X_train = X_test = y_train = y_test = []
 
+
 def import_nba_dataset():
     AGE = 3
     MIN = 8
-    PTS = 9 
+    PTS = 9
     y_labels = []
     dataset = []
     with open("./nba_ratings.csv") as csv_file:
@@ -25,7 +26,7 @@ def import_nba_dataset():
         header.append(next(csv_reader))
         for i, row in enumerate(csv_reader):
             y_labels.append([row[-1]])
-            dataset.append([row[AGE],row[MIN],row[PTS]])
+            dataset.append([row[AGE], row[MIN], row[PTS]])
 
     return dataset, y_labels
 
@@ -63,37 +64,27 @@ Ex: 'Senior' converted to 'level=Senior'
 #        row[i] = header[i] + "=" + str(row[i])
 
 
-
 # nba dataset
 nba_table, nba_labels = import_nba_dataset()
 
+X_train = [['low', 'moderate', 'mid'], ['average', 'low', 'bottom'], ['average', 'moderate', 'bottom'], ['low', 'moderate', 'mid'], ['low', 'low', 'bottom'], ['low', 'moderate', 'mid'], ['low', 'low', 'bottom'], [
+    'low', 'high', 'top'], ['high', 'high', 'top'], ['low', 'low', 'bottom'], ['average', 'moderate', 'mid'], ['average', 'high', 'mid'], ['low', 'moderate', 'mid'], ['low', 'low', 'bottom'], ['low', 'moderate', 'mid']]
+
+y_train = ['special', 'basic', 'special', 'basic', 'basic', 'special', 'basic',
+           'special', 'special', 'basic', 'special', 'special', 'special', 'basic', 'basic']
+
+myRFC = MyRandomForestClassifier(6, 5, 3)
+
 
 def test_fit():
-    X_train, X_test, y_train, y_test = myutils.random_forest_split_test_and_training_sets_stratified(
-        nba_table, nba_labels)
-
-    myRFC = MyRandomForestClassifier(10, 5, 3)
     myRFC.fit(X_train, y_train)
-    sklearn_RFC = RandomForestClassifier(N)
-    y_pred = myRFC.predict(X_test)
-    print(y_pred)
+
+    assert len(myRFC.trees) == 6
 
 
 def test_predict():
-    get_train_test_sets(interview_table, interview_y_labels)
-    assert len(X_train) == len(y_train) and len(X_train) != 0
-    assert len(X_test) == len(y_test) and len(X_test) != 0
-
-    myRFC = MyRandomForestClassifier()
-    sklearn_RFC = RandomForestClassifier(N, random_state=0)
-
-    myRFC.fit(X_train, y_train)
-    my_prediction = myRFC.predict(X_test)
-
-    sklearn_RFC.fit(X_train, y_train)
-    sklearn_prediction = sklearn_RFC.predict(X_test)
-
-    assert my_prediction == sklearn_prediction
+    y_pred = myRFC.predict([["average", "high", "top"]])
+    assert y_pred == ["special"]
 
 
 def get_train_test_sets(ds: list, y_labels):
@@ -114,4 +105,4 @@ def get_train_test_sets(ds: list, y_labels):
 
 if __name__ == '__main__':
     test_fit()
-    # test_predict()
+    test_predict()
